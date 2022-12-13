@@ -8,7 +8,7 @@
 # --------------------------------------------------------------------------
 
 import sys
-from typing import Any, List, Mapping, Optional, overload
+from typing import Any, Dict, List, Mapping, Optional, TYPE_CHECKING, overload
 
 from .. import _model_base
 from .._model_base import rest_field
@@ -21,7 +21,346 @@ if sys.version_info >= (3, 8):
     from typing import Literal  # pylint: disable=no-name-in-module, ungrouped-imports
 else:
     from typing_extensions import Literal  # type: ignore  # pylint: disable=ungrouped-imports
+
+if TYPE_CHECKING:
+    # pylint: disable=unused-import,ungrouped-imports
+    from .. import models as _models
 JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
+
+
+class Choice(_model_base.Model):
+    """Choice model within completion response.
+
+    :ivar text: Generated text for given completion prompt.
+    :vartype text: str
+    :ivar index: Index.
+    :vartype index: int
+    :ivar logprobs: Log Prob Model.
+    :vartype logprobs: ~azure.openai.models.CompletionsLogProbsModel
+    :ivar finish_reason: Reason for finishing.
+    :vartype finish_reason: str
+    """
+
+    text: Optional[str] = rest_field()
+    """Generated text for given completion prompt. """
+    index: Optional[int] = rest_field()
+    """Index. """
+    logprobs: Optional["_models.CompletionsLogProbsModel"] = rest_field()
+    """Log Prob Model. """
+    finish_reason: Optional[str] = rest_field()
+    """Reason for finishing. """
+
+    @overload
+    def __init__(
+        self,
+        *,
+        text: Optional[str] = None,
+        index: Optional[int] = None,
+        logprobs: Optional["_models.CompletionsLogProbsModel"] = None,
+        finish_reason: Optional[str] = None,
+    ):
+        ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]):
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+        ...
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class Completion(_model_base.Model):
+    """Expected response schema to completion request.
+
+    Readonly variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to Azure.
+
+    :ivar apim_request_id: Request ID for troubleshooting purposes. Required.
+    :vartype apim_request_id: str
+    :ivar id: Id for completion response.
+    :vartype id: str
+    :ivar object: Object for completion response. Required. Default value is "text_completion".
+    :vartype object: str
+    :ivar created: Created time for completion response.
+    :vartype created: int
+    :ivar model: Model used for completion response.
+    :vartype model: str
+    :ivar choices: Array of choices returned containing text completions to prompts sent.
+    :vartype choices: list[~azure.openai.models.Choice]
+    """
+
+    apim_request_id: str = rest_field(name="apim-request-id")
+    """Request ID for troubleshooting purposes. Required. """
+    id: Optional[str] = rest_field()
+    """Id for completion response. """
+    object: Literal["text_completion"] = rest_field()
+    """Object for completion response. Required. Default value is \"text_completion\"."""
+    created: Optional[int] = rest_field()
+    """Created time for completion response. """
+    model: Optional[str] = rest_field()
+    """Model used for completion response. """
+    choices: Optional[List["_models.Choice"]] = rest_field()
+    """Array of choices returned containing text completions to prompts sent. """
+
+    @overload
+    def __init__(
+        self,
+        *,
+        apim_request_id: str,
+        id: Optional[str] = None,  # pylint: disable=redefined-builtin
+        created: Optional[int] = None,
+        model: Optional[str] = None,
+        choices: Optional[List["_models.Choice"]] = None,
+    ):
+        ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]):
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+        ...
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.object: Literal["text_completion"] = "text_completion"
+
+
+class CompletionsLogProbsModel(_model_base.Model):
+    """LogProbs model within completion choice.
+
+    :ivar tokens: Tokens.
+    :vartype tokens: list[str]
+    :ivar token_logprobs: LogProbs of Tokens.
+    :vartype token_logprobs: list[float]
+    :ivar top_logprobs: Top LogProbs.
+    :vartype top_logprobs: list[dict[str, float]]
+    :ivar text_offset: Text offset.
+    :vartype text_offset: list[int]
+    """
+
+    tokens: Optional[List[str]] = rest_field()
+    """Tokens. """
+    token_logprobs: Optional[List[float]] = rest_field()
+    """LogProbs of Tokens. """
+    top_logprobs: Optional[List[Dict[str, float]]] = rest_field()
+    """Top LogProbs. """
+    text_offset: Optional[List[int]] = rest_field()
+    """Text offset. """
+
+    @overload
+    def __init__(
+        self,
+        *,
+        tokens: Optional[List[str]] = None,
+        token_logprobs: Optional[List[float]] = None,
+        top_logprobs: Optional[List[Dict[str, float]]] = None,
+        text_offset: Optional[List[int]] = None,
+    ):
+        ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]):
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+        ...
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class CompletionsRequest(_model_base.Model):  # pylint: disable=too-many-instance-attributes
+    """CompletionsRequest.
+
+    :ivar prompt: An optional prompt to complete from, encoded as a string, a list of strings, or
+     a list of token lists. Defaults to <|endoftext|>. The prompt to complete from.
+     If you would like to provide multiple prompts, use the POST variant of this
+     method. Note that <|endoftext|> is the document separator that the model sees
+     during training, so if a prompt is not specified the model will generate as if
+     from the beginning of a new document. Maximum allowed size of string list is
+     2048.
+    :vartype prompt: str
+    :ivar max_tokens: The maximum number of tokens to generate. Has minimum of 0.
+    :vartype max_tokens: int
+    :ivar temperature: What sampling temperature to use. Higher values means the model will take
+     more
+     risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones
+     with a well-defined answer.
+     We generally recommend using this or ``top_p`` but
+     not both.
+     Minimum of 0 and maximum of 2 allowed.
+    :vartype temperature: float
+    :ivar top_p: An alternative to sampling with temperature, called nucleus sampling, where the
+     model considers the results of the tokens with top_p probability mass. So 0.1
+     means only the tokens comprising the top 10% probability mass are
+     considered.
+     We generally recommend using this or ``temperature`` but not
+     both.
+     Minimum of 0 and maximum of 1 allowed.
+    :vartype top_p: float
+    :ivar logit_bias: Defaults to null. Modify the likelihood of specified tokens appearing in the
+     completion. Accepts a json object that maps tokens (specified by their token ID
+     in the GPT tokenizer) to an associated bias value from -100 to 100. You can use
+     this tokenizer tool (which works for both GPT-2 and GPT-3) to convert text to
+     token IDs. Mathematically, the bias is added to the logits generated by the
+     model prior to sampling. The exact effect will vary per model, but values
+     between -1 and 1 should decrease or increase likelihood of selection; values
+     like -100 or 100 should result in a ban or exclusive selection of the relevant
+     token. As an example, you can pass {"50256" &#58; -100} to prevent the
+     <|endoftext|> token from being generated.
+    :vartype logit_bias: dict[str, int]
+    :ivar user: The ID of the end-user, for use in tracking and rate-limiting.
+    :vartype user: str
+    :ivar n: How many snippets to generate for each prompt. Minimum of 1 and maximum of 128
+     allowed.
+    :vartype n: int
+    :ivar stream: Whether to enable streaming for this endpoint. If set, tokens will be sent as
+     server-sent events as they become available.
+    :vartype stream: bool
+    :ivar logprobs: Include the log probabilities on the ``logprobs`` most likely tokens, as well
+     the
+     chosen tokens. So for example, if ``logprobs`` is 10, the API will return a list
+     of the 10 most likely tokens. If ``logprobs`` is 0, only the chosen tokens will
+     have logprobs returned. Minimum of 0 and maximum of 100 allowed.
+    :vartype logprobs: int
+    :ivar model: The name of the model to use.
+    :vartype model: str
+    :ivar echo: Echo back the prompt in addition to the completion.
+    :vartype echo: bool
+    :ivar stop: A sequence which indicates the end of the current document.
+    :vartype stop: str
+    :ivar completion_config: Completion configuration.
+    :vartype completion_config: str
+    :ivar cache_level: can be used to disable any server-side caching, 0=no cache, 1=prompt prefix
+     enabled, 2=full cache.
+    :vartype cache_level: int
+    :ivar presence_penalty: How much to penalize new tokens based on their existing frequency in
+     the text
+     so far. Decreases the model's likelihood to repeat the same line verbatim. Has
+     minimum of -2 and maximum of 2.
+    :vartype presence_penalty: float
+    :ivar frequency_penalty: How much to penalize new tokens based on whether they appear in the
+     text so
+     far. Increases the model's likelihood to talk about new topics.
+    :vartype frequency_penalty: float
+    :ivar best_of: How many generations to create server side, and display only the best. Will not
+     stream intermediate progress if best_of > 1. Has maximum value of 128.
+    :vartype best_of: int
+    """
+
+    prompt: Optional[str] = rest_field()
+    """An optional prompt to complete from, encoded as a string, a list of strings, or
+a list of token lists. Defaults to <|endoftext|>. The prompt to complete from.
+If you would like to provide multiple prompts, use the POST variant of this
+method. Note that <|endoftext|> is the document separator that the model sees
+during training, so if a prompt is not specified the model will generate as if
+from the beginning of a new document. Maximum allowed size of string list is
+2048. """
+    max_tokens: Optional[int] = rest_field()
+    """The maximum number of tokens to generate. Has minimum of 0. """
+    temperature: Optional[float] = rest_field()
+    """What sampling temperature to use. Higher values means the model will take more
+risks. Try 0.9 for more creative applications, and 0 (argmax sampling) for ones
+with a well-defined answer.
+We generally recommend using this or ``top_p`` but
+not both.
+Minimum of 0 and maximum of 2 allowed. """
+    top_p: Optional[float] = rest_field()
+    """An alternative to sampling with temperature, called nucleus sampling, where the
+model considers the results of the tokens with top_p probability mass. So 0.1
+means only the tokens comprising the top 10% probability mass are
+considered.
+We generally recommend using this or ``temperature`` but not
+both.
+Minimum of 0 and maximum of 1 allowed. """
+    logit_bias: Optional[Dict[str, int]] = rest_field()
+    """Defaults to null. Modify the likelihood of specified tokens appearing in the
+completion. Accepts a json object that maps tokens (specified by their token ID
+in the GPT tokenizer) to an associated bias value from -100 to 100. You can use
+this tokenizer tool (which works for both GPT-2 and GPT-3) to convert text to
+token IDs. Mathematically, the bias is added to the logits generated by the
+model prior to sampling. The exact effect will vary per model, but values
+between -1 and 1 should decrease or increase likelihood of selection; values
+like -100 or 100 should result in a ban or exclusive selection of the relevant
+token. As an example, you can pass {\"50256\" &#58; -100} to prevent the
+<|endoftext|> token from being generated. """
+    user: Optional[str] = rest_field()
+    """The ID of the end-user, for use in tracking and rate-limiting. """
+    n: Optional[int] = rest_field()
+    """How many snippets to generate for each prompt. Minimum of 1 and maximum of 128
+allowed. """
+    stream: Optional[bool] = rest_field()
+    """Whether to enable streaming for this endpoint. If set, tokens will be sent as
+server-sent events as they become available. """
+    logprobs: Optional[int] = rest_field()
+    """Include the log probabilities on the ``logprobs`` most likely tokens, as well the
+chosen tokens. So for example, if ``logprobs`` is 10, the API will return a list
+of the 10 most likely tokens. If ``logprobs`` is 0, only the chosen tokens will
+have logprobs returned. Minimum of 0 and maximum of 100 allowed. """
+    model: Optional[str] = rest_field()
+    """The name of the model to use. """
+    echo: Optional[bool] = rest_field()
+    """Echo back the prompt in addition to the completion. """
+    stop: Optional[str] = rest_field()
+    """A sequence which indicates the end of the current document. """
+    completion_config: Optional[str] = rest_field()
+    """Completion configuration. """
+    cache_level: Optional[int] = rest_field()
+    """can be used to disable any server-side caching, 0=no cache, 1=prompt prefix
+enabled, 2=full cache. """
+    presence_penalty: Optional[float] = rest_field()
+    """How much to penalize new tokens based on their existing frequency in the text
+so far. Decreases the model's likelihood to repeat the same line verbatim. Has
+minimum of -2 and maximum of 2. """
+    frequency_penalty: Optional[float] = rest_field()
+    """How much to penalize new tokens based on whether they appear in the text so
+far. Increases the model's likelihood to talk about new topics. """
+    best_of: Optional[int] = rest_field()
+    """How many generations to create server side, and display only the best. Will not
+stream intermediate progress if best_of > 1. Has maximum value of 128. """
+
+    @overload
+    def __init__(
+        self,
+        *,
+        prompt: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        temperature: Optional[float] = None,
+        top_p: Optional[float] = None,
+        logit_bias: Optional[Dict[str, int]] = None,
+        user: Optional[str] = None,
+        n: Optional[int] = None,
+        stream: Optional[bool] = None,
+        logprobs: Optional[int] = None,
+        model: Optional[str] = None,
+        echo: Optional[bool] = None,
+        stop: Optional[str] = None,
+        completion_config: Optional[str] = None,
+        cache_level: Optional[int] = None,
+        presence_penalty: Optional[float] = None,
+        frequency_penalty: Optional[float] = None,
+        best_of: Optional[int] = None,
+    ):
+        ...
+
+    @overload
+    def __init__(self, mapping: Mapping[str, Any]):
+        """
+        :param mapping: raw JSON to initialize the model.
+        :type mapping: Mapping[str, Any]
+        """
+        ...
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class Embedding(_model_base.Model):
