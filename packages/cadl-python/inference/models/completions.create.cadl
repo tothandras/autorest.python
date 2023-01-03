@@ -91,7 +91,7 @@ have logprobs returned. Minimum of 0 and maximum of 100 allowed.
     stop?: CompletionsStop;
 
     @doc("Completion configuration")
-    completion_config?: string;
+    completionConfig?: string;
 
     @doc("""
 can be used to disable any server-side caching, 0=no cache, 1=prompt prefix

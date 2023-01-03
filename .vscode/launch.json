@@ -8,7 +8,7 @@
             "name": "inference",
             "request": "launch",
             "cwd": "${workspaceFolder}/packages/cadl-python",
-            "runtimeArgs": ["compile", "inference/.", "--emit", "@azure-tools/cadl-python", "--output-dir=inference/cadl-output"],
+            "runtimeArgs": ["compile", "inference/.", "--emit", "@azure-tools/cadl-python"],
             "runtimeExecutable": "cadl",
             "skipFiles": ["<node_internals>/**"],
             "type": "node",
