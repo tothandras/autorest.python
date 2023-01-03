@@ -43,32 +43,6 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
     async def embeddings(
         self,
         deployment_id: str,
-        body: _models.EmbeddingsRequest,
-        *,
-        model: Optional[str] = None,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.Embeddings:
-        """Return the embeddings for a given prompt.
-
-        :param deployment_id: deployment id of the deployed model. Required.
-        :type deployment_id: str
-        :param body: Required.
-        :type body: ~azure.openai.models.EmbeddingsRequest
-        :keyword model: ID of the model to use. Default value is None.
-        :paramtype model: str
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: Embeddings. The Embeddings is compatible with MutableMapping
-        :rtype: ~azure.openai.models.Embeddings
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def embeddings(
-        self,
-        deployment_id: str,
         body: JSON,
         *,
         model: Optional[str] = None,
@@ -89,6 +63,18 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         :return: Embeddings. The Embeddings is compatible with MutableMapping
         :rtype: ~azure.openai.models.Embeddings
         :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # JSON input template you can fill out and use as your body input.
+                body = {
+                    "input": "str",  # An input to embed, encoded as a string, a list of strings,
+                      or a list of token"nlists. Required.
+                    "input_type": "str",  # Optional. input type of embedding search to use.
+                    "user": "str"  # Optional. The ID of the end-user, for use in tracking and
+                      rate-limiting.
+                }
         """
 
     @overload
@@ -119,19 +105,14 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
 
     @distributed_trace_async
     async def embeddings(
-        self,
-        deployment_id: str,
-        body: Union[_models.EmbeddingsRequest, JSON, IO],
-        *,
-        model: Optional[str] = None,
-        **kwargs: Any
+        self, deployment_id: str, body: Union[JSON, IO], *, model: Optional[str] = None, **kwargs: Any
     ) -> _models.Embeddings:
         """Return the embeddings for a given prompt.
 
         :param deployment_id: deployment id of the deployed model. Required.
         :type deployment_id: str
-        :param body: Is one of the following types: model, JSON, IO Required.
-        :type body: ~azure.openai.models.EmbeddingsRequest or JSON or IO
+        :param body: Is either a model type or a IO type. Required.
+        :type body: JSON or IO
         :keyword model: ID of the model to use. Default value is None.
         :paramtype model: str
         :keyword content_type: Body parameter Content-Type. Known values are: application/json. Default
@@ -160,7 +141,7 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         if isinstance(body, (IO, bytes)):
             _content = body
         else:
-            _content = json.dumps(body, cls=AzureJSONEncoder)
+            _content = json.dumps(body, cls=AzureJSONEncoder)  # type: ignore
 
         request = build_open_ai_embeddings_request(
             deployment_id=deployment_id,
@@ -195,29 +176,6 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
 
     @overload
     async def completions(
-        self,
-        deployment_id: str,
-        body: _models.CompletionsRequest,
-        *,
-        content_type: str = "application/json",
-        **kwargs: Any
-    ) -> _models.Completion:
-        """Return the completions for a given prompt.
-
-        :param deployment_id: deployment id of the deployed model. Required.
-        :type deployment_id: str
-        :param body: Required.
-        :type body: ~azure.openai.models.CompletionsRequest
-        :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
-         Default value is "application/json".
-        :paramtype content_type: str
-        :return: Completion. The Completion is compatible with MutableMapping
-        :rtype: ~azure.openai.models.Completion
-        :raises ~azure.core.exceptions.HttpResponseError:
-        """
-
-    @overload
-    async def completions(
         self, deployment_id: str, body: JSON, *, content_type: str = "application/json", **kwargs: Any
     ) -> _models.Completion:
         """Return the completions for a given prompt.
@@ -232,6 +190,73 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         :return: Completion. The Completion is compatible with MutableMapping
         :rtype: ~azure.openai.models.Completion
         :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # JSON input template you can fill out and use as your body input.
+                body = {
+                    "best_of": 0,  # Optional. How many generations to create server side, and
+                      display only the best. Will not"nstream intermediate progress if best_of > 1. Has
+                      maximum value of 128.
+                    "cache_level": 0,  # Optional. can be used to disable any server-side
+                      caching, 0=no cache, 1=prompt prefix"nenabled, 2=full cache.
+                    "completion_config": "str",  # Optional. Completion configuration.
+                    "echo": bool,  # Optional. Echo back the prompt in addition to the
+                      completion.
+                    "frequency_penalty": 0.0,  # Optional. How much to penalize new tokens based
+                      on whether they appear in the text so"nfar. Increases the model's likelihood to
+                      talk about new topics.
+                    "logit_bias": {
+                        "str": 0  # Optional. Defaults to null. Modify the likelihood of
+                          specified tokens appearing in the"ncompletion. Accepts a json object that
+                          maps tokens (specified by their token ID"nin the GPT tokenizer) to an
+                          associated bias value from -100 to 100. You can use"nthis tokenizer tool
+                          (which works for both GPT-2 and GPT-3) to convert text to"ntoken IDs.
+                          Mathematically, the bias is added to the logits generated by the"nmodel prior
+                          to sampling. The exact effect will vary per model, but values"nbetween -1 and
+                          1 should decrease or increase likelihood of selection; values"nlike -100 or
+                          100 should result in a ban or exclusive selection of the relevant"ntoken. As
+                          an example, you can pass {"50256" &#58; -100} to prevent the"n<|endoftext|>
+                          token from being generated.
+                    },
+                    "logprobs": 0,  # Optional. Include the log probabilities on the ``logprobs``
+                      most likely tokens, as well the"nchosen tokens. So for example, if ``logprobs``
+                      is 10, the API will return a list"nof the 10 most likely tokens. If ``logprobs``
+                      is 0, only the chosen tokens will"nhave logprobs returned. Minimum of 0 and
+                      maximum of 100 allowed.
+                    "max_tokens": 0,  # Optional. The maximum number of tokens to generate. Has
+                      minimum of 0.
+                    "model": "str",  # Optional. The name of the model to use.
+                    "n": 0,  # Optional. How many snippets to generate for each prompt. Minimum
+                      of 1 and maximum of 128"nallowed.
+                    "presence_penalty": 0.0,  # Optional. How much to penalize new tokens based
+                      on their existing frequency in the text"nso far. Decreases the model's likelihood
+                      to repeat the same line verbatim. Has"nminimum of -2 and maximum of 2.
+                    "prompt": "str",  # Optional. An optional prompt to complete from, encoded as
+                      a string, a list of strings, or"na list of token lists. Defaults to
+                      <|endoftext|>. The prompt to complete from."nIf you would like to provide
+                      multiple prompts, use the POST variant of this"nmethod. Note that <|endoftext|>
+                      is the document separator that the model sees"nduring training, so if a prompt is
+                      not specified the model will generate as if"nfrom the beginning of a new
+                      document. Maximum allowed size of string list is"n2048.
+                    "stop": "str",  # Optional. A sequence which indicates the end of the current
+                      document.
+                    "stream": bool,  # Optional. Whether to enable streaming for this endpoint.
+                      If set, tokens will be sent as"nserver-sent events as they become available.
+                    "temperature": 0.0,  # Optional. What sampling temperature to use. Higher
+                      values means the model will take more"nrisks. Try 0.9 for more creative
+                      applications, and 0 (argmax sampling) for ones"nwith a well-defined answer."nWe
+                      generally recommend using this or ``top_p`` but"nnot both."nMinimum of 0 and
+                      maximum of 2 allowed.
+                    "top_p": 0.0,  # Optional. An alternative to sampling with temperature,
+                      called nucleus sampling, where the"nmodel considers the results of the tokens
+                      with top_p probability mass. So 0.1"nmeans only the tokens comprising the top 10%
+                      probability mass are"nconsidered."nWe generally recommend using this or
+                      ``temperature`` but not"nboth."nMinimum of 0 and maximum of 1 allowed.
+                    "user": "str"  # Optional. The ID of the end-user, for use in tracking and
+                      rate-limiting.
+                }
         """
 
     @overload
@@ -253,15 +278,13 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         """
 
     @distributed_trace_async
-    async def completions(
-        self, deployment_id: str, body: Union[_models.CompletionsRequest, JSON, IO], **kwargs: Any
-    ) -> _models.Completion:
+    async def completions(self, deployment_id: str, body: Union[JSON, IO], **kwargs: Any) -> _models.Completion:
         """Return the completions for a given prompt.
 
         :param deployment_id: deployment id of the deployed model. Required.
         :type deployment_id: str
-        :param body: Is one of the following types: model, JSON, IO Required.
-        :type body: ~azure.openai.models.CompletionsRequest or JSON or IO
+        :param body: Is either a model type or a IO type. Required.
+        :type body: JSON or IO
         :keyword content_type: Body parameter Content-Type. Known values are: application/json. Default
          value is None.
         :paramtype content_type: str
@@ -288,7 +311,7 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         if isinstance(body, (IO, bytes)):
             _content = body
         else:
-            _content = json.dumps(body, cls=AzureJSONEncoder)
+            _content = json.dumps(body, cls=AzureJSONEncoder)  # type: ignore
 
         request = build_open_ai_completions_request(
             deployment_id=deployment_id,

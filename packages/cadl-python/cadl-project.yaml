@@ -1,0 +1,6 @@
+parameters:
+  python-sdk-folder:
+    default: "{cwd}/inference/generated_code"
+options:
+  "@azure-tools/cadl-python":
+    "emitter-output-dir": "{python-sdk-folder}"
