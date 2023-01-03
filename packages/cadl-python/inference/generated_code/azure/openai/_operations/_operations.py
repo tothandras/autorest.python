@@ -45,7 +45,7 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 
 
-def build_open_ai_embeddings_request(deployment_id: str, *, model: Optional[str] = None, **kwargs: Any) -> HttpRequest:
+def build_open_ai_embeddings_request(deployment_id: str, **kwargs: Any) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
@@ -64,8 +64,6 @@ def build_open_ai_embeddings_request(deployment_id: str, *, model: Optional[str]
     _url: str = _format_url_section(_url, **path_format_arguments)  # type: ignore
 
     # Construct parameters
-    if model is not None:
-        _params["model"] = _SERIALIZER.query("model", model, "str")
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
 
     # Construct headers
@@ -108,13 +106,7 @@ def build_open_ai_completions_request(deployment_id: str, **kwargs: Any) -> Http
 class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
     @overload
     def embeddings(
-        self,
-        deployment_id: str,
-        body: JSON,
-        *,
-        model: Optional[str] = None,
-        content_type: str = "application/json",
-        **kwargs: Any
+        self, deployment_id: str, body: JSON, *, content_type: str = "application/json", **kwargs: Any
     ) -> _models.Embeddings:
         """Return the embeddings for a given prompt.
 
@@ -122,8 +114,6 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         :type deployment_id: str
         :param body: Required.
         :type body: JSON
-        :keyword model: ID of the model to use. Default value is None.
-        :paramtype model: str
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -137,8 +127,10 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
                 # JSON input template you can fill out and use as your body input.
                 body = {
                     "input": "str",  # An input to embed, encoded as a string, a list of strings,
-                      or a list of token"nlists. Required.
+                      or a list of token"nlists. Required. Is one of the following types: string, list,
+                      list, list
                     "input_type": "str",  # Optional. input type of embedding search to use.
+                    "model": "str",  # Optional. ID of the model to use.
                     "user": "str"  # Optional. The ID of the end-user, for use in tracking and
                       rate-limiting.
                 }
@@ -146,13 +138,7 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
 
     @overload
     def embeddings(
-        self,
-        deployment_id: str,
-        body: IO,
-        *,
-        model: Optional[str] = None,
-        content_type: str = "application/json",
-        **kwargs: Any
+        self, deployment_id: str, body: IO, *, content_type: str = "application/json", **kwargs: Any
     ) -> _models.Embeddings:
         """Return the embeddings for a given prompt.
 
@@ -160,8 +146,6 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         :type deployment_id: str
         :param body: Required.
         :type body: IO
-        :keyword model: ID of the model to use. Default value is None.
-        :paramtype model: str
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
@@ -171,17 +155,13 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         """
 
     @distributed_trace
-    def embeddings(
-        self, deployment_id: str, body: Union[JSON, IO], *, model: Optional[str] = None, **kwargs: Any
-    ) -> _models.Embeddings:
+    def embeddings(self, deployment_id: str, body: Union[JSON, IO], **kwargs: Any) -> _models.Embeddings:
         """Return the embeddings for a given prompt.
 
         :param deployment_id: deployment id of the deployed model. Required.
         :type deployment_id: str
         :param body: Is either a model type or a IO type. Required.
         :type body: JSON or IO
-        :keyword model: ID of the model to use. Default value is None.
-        :paramtype model: str
         :keyword content_type: Body parameter Content-Type. Known values are: application/json. Default
          value is None.
         :paramtype content_type: str
@@ -212,7 +192,6 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
 
         request = build_open_ai_embeddings_request(
             deployment_id=deployment_id,
-            model=model,
             content_type=content_type,
             api_version=self._config.api_version,
             content=_content,
@@ -306,9 +285,10 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
                       multiple prompts, use the POST variant of this"nmethod. Note that <|endoftext|>
                       is the document separator that the model sees"nduring training, so if a prompt is
                       not specified the model will generate as if"nfrom the beginning of a new
-                      document. Maximum allowed size of string list is"n2048.
+                      document. Maximum allowed size of string list is"n2048. Is one of the following
+                      types: string, list, list
                     "stop": "str",  # Optional. A sequence which indicates the end of the current
-                      document.
+                      document. Is either a string type or a list type.
                     "stream": bool,  # Optional. Whether to enable streaming for this endpoint.
                       If set, tokens will be sent as"nserver-sent events as they become available.
                     "temperature": 0.0,  # Optional. What sampling temperature to use. Higher

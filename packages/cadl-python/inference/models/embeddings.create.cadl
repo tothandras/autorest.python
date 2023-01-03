@@ -12,7 +12,6 @@ alias EmbeddingsRequest = {
     @doc("input type of embedding search to use")
     input_type?: string;
 
-    @query
     @doc("ID of the model to use")
     "model"?: string;
 
@@ -20,7 +19,7 @@ alias EmbeddingsRequest = {
     An input to embed, encoded as a string, a list of strings, or a list of token
     lists
     """)
-    input: string;
+    input: string | string[] | integer[] | integer[][];
 };
 
 model Embeddings {
