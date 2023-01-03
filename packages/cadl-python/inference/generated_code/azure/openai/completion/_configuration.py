@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 
-class EmbeddingClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
-    """Configuration for EmbeddingClient.
+class CompletionClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
+    """Configuration for CompletionClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
@@ -45,7 +45,7 @@ class EmbeddingClientConfiguration(Configuration):  # pylint: disable=too-many-i
     """
 
     def __init__(self, endpoint: str, credential: Union[AzureKeyCredential, "TokenCredential"], **kwargs: Any) -> None:
-        super(EmbeddingClientConfiguration, self).__init__(**kwargs)
+        super(CompletionClientConfiguration, self).__init__(**kwargs)
         api_version: Literal["2022-06-01-preview"] = kwargs.pop("api_version", "2022-06-01-preview")
 
         if endpoint is None:
@@ -56,7 +56,7 @@ class EmbeddingClientConfiguration(Configuration):  # pylint: disable=too-many-i
         self.endpoint = endpoint
         self.credential = credential
         self.api_version = api_version
-        kwargs.setdefault("sdk_moniker", "embeddingclient/{}".format(VERSION))
+        kwargs.setdefault("sdk_moniker", "completionclient/{}".format(VERSION))
         self._configure(**kwargs)
 
     def _infer_policy(self, **kwargs):

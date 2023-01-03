@@ -1,0 +1,22 @@
+import "./main.cadl";
+import "@azure-tools/cadl-dpg";
+
+using Azure.DPG;
+
+namespace Customizations;   // The actual name here doesn't matter and is here for organization purposes only
+
+@client({
+  name: "EmbeddingClient",
+  service: Azure.OpenAI
+})
+interface Client1 {
+    embeddings is Azure.OpenAI.embeddings;
+}
+
+@client({
+  name: "completion.CompletionClient",
+  service: Azure.OpenAI
+})
+interface Client2 {
+    completions is Azure.OpenAI.completions;
+}

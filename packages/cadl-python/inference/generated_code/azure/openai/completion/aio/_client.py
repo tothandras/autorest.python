@@ -14,16 +14,16 @@ from azure.core.credentials import AzureKeyCredential
 from azure.core.rest import AsyncHttpResponse, HttpRequest
 
 from .._serialization import Deserializer, Serializer
-from ._configuration import EmbeddingClientConfiguration
-from ._operations import EmbeddingClientOperationsMixin
+from ._configuration import CompletionClientConfiguration
+from ._operations import CompletionClientOperationsMixin
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
     from azure.core.credentials_async import AsyncTokenCredential
 
 
-class EmbeddingClient(EmbeddingClientOperationsMixin):  # pylint: disable=client-accepts-api-version-keyword
-    """EmbeddingClient.
+class CompletionClient(CompletionClientOperationsMixin):  # pylint: disable=client-accepts-api-version-keyword
+    """CompletionClient.
 
     :param endpoint: Supported Cognitive Services endpoints (protocol and hostname, for example:
      https://westus.api.cognitive.microsoft.com). Required.
@@ -42,7 +42,7 @@ class EmbeddingClient(EmbeddingClientOperationsMixin):  # pylint: disable=client
         self, endpoint: str, credential: Union[AzureKeyCredential, "AsyncTokenCredential"], **kwargs: Any
     ) -> None:
         _endpoint = "{endpoint}/openai"
-        self._config = EmbeddingClientConfiguration(endpoint=endpoint, credential=credential, **kwargs)
+        self._config = CompletionClientConfiguration(endpoint=endpoint, credential=credential, **kwargs)
         self._client = AsyncPipelineClient(base_url=_endpoint, config=self._config, **kwargs)
 
         self._serialize = Serializer()
@@ -78,7 +78,7 @@ class EmbeddingClient(EmbeddingClientOperationsMixin):  # pylint: disable=client
     async def close(self) -> None:
         await self._client.close()
 
-    async def __aenter__(self) -> "EmbeddingClient":
+    async def __aenter__(self) -> "CompletionClient":
         await self._client.__aenter__()
         return self
 

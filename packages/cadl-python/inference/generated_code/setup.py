@@ -9,12 +9,12 @@
 from setuptools import setup, find_packages
 
 
-PACKAGE_NAME = "openaiclient"
+PACKAGE_NAME = "embeddingclient"
 version = "1.0.0b1"
 setup(
     name=PACKAGE_NAME,
     version=version,
-    description="OpenAIClient",
+    description="EmbeddingClient",
     author_email="",
     url="",
     keywords="azure, azure sdk",
@@ -26,6 +26,6 @@ setup(
         "typing-extensions>=4.3.0; python_version<'3.8.0'",
     ],
     long_description="""\
-    Azure OpenAI APIs for completions and search.
+    EmbeddingClient.
     """,
 )

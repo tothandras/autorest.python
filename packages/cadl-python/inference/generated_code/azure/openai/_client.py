@@ -13,8 +13,8 @@ from azure.core import PipelineClient
 from azure.core.credentials import AzureKeyCredential
 from azure.core.rest import HttpRequest, HttpResponse
 
-from ._configuration import OpenAIClientConfiguration
-from ._operations import OpenAIClientOperationsMixin
+from ._configuration import EmbeddingClientConfiguration
+from ._operations import EmbeddingClientOperationsMixin
 from ._serialization import Deserializer, Serializer
 
 if TYPE_CHECKING:
@@ -22,8 +22,8 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 
-class OpenAIClient(OpenAIClientOperationsMixin):  # pylint: disable=client-accepts-api-version-keyword
-    """Azure OpenAI APIs for completions and search.
+class EmbeddingClient(EmbeddingClientOperationsMixin):  # pylint: disable=client-accepts-api-version-keyword
+    """EmbeddingClient.
 
     :param endpoint: Supported Cognitive Services endpoints (protocol and hostname, for example:
      https://westus.api.cognitive.microsoft.com). Required.
@@ -40,7 +40,7 @@ class OpenAIClient(OpenAIClientOperationsMixin):  # pylint: disable=client-accep
 
     def __init__(self, endpoint: str, credential: Union[AzureKeyCredential, "TokenCredential"], **kwargs: Any) -> None:
         _endpoint = "{endpoint}/openai"
-        self._config = OpenAIClientConfiguration(endpoint=endpoint, credential=credential, **kwargs)
+        self._config = EmbeddingClientConfiguration(endpoint=endpoint, credential=credential, **kwargs)
         self._client = PipelineClient(base_url=_endpoint, config=self._config, **kwargs)
 
         self._serialize = Serializer()
@@ -76,7 +76,7 @@ class OpenAIClient(OpenAIClientOperationsMixin):  # pylint: disable=client-accep
     def close(self) -> None:
         self._client.close()
 
-    def __enter__(self) -> "OpenAIClient":
+    def __enter__(self) -> "EmbeddingClient":
         self._client.__enter__()
         return self
 

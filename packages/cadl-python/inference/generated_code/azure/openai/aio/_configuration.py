@@ -25,8 +25,8 @@ if TYPE_CHECKING:
     from azure.core.credentials_async import AsyncTokenCredential
 
 
-class OpenAIClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
-    """Configuration for OpenAIClient.
+class EmbeddingClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
+    """Configuration for EmbeddingClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
@@ -47,7 +47,7 @@ class OpenAIClientConfiguration(Configuration):  # pylint: disable=too-many-inst
     def __init__(
         self, endpoint: str, credential: Union[AzureKeyCredential, "AsyncTokenCredential"], **kwargs: Any
     ) -> None:
-        super(OpenAIClientConfiguration, self).__init__(**kwargs)
+        super(EmbeddingClientConfiguration, self).__init__(**kwargs)
         api_version: Literal["2022-06-01-preview"] = kwargs.pop("api_version", "2022-06-01-preview")
 
         if endpoint is None:
@@ -58,7 +58,7 @@ class OpenAIClientConfiguration(Configuration):  # pylint: disable=too-many-inst
         self.endpoint = endpoint
         self.credential = credential
         self.api_version = api_version
-        kwargs.setdefault("sdk_moniker", "openaiclient/{}".format(VERSION))
+        kwargs.setdefault("sdk_moniker", "embeddingclient/{}".format(VERSION))
         self._configure(**kwargs)
 
     def _infer_policy(self, **kwargs):
