@@ -1,0 +1,68 @@
+import "@cadl-lang/rest";
+
+using Cadl.Rest;
+using Cadl.Http;
+
+namespace Azure.OpenAI.Completions;
+
+@doc("CompletionsPrompt1")
+model CompletionsPrompt1 {
+    @doc("name1")
+    name1: string;
+}
+@doc("CompletionsPrompt2")
+model CompletionsPrompt2 {
+    @doc("name2")
+    name2: string;
+}
+@doc("CompletionsPrompt3")
+model CompletionsPrompt3 {
+    @doc("name3")
+    name3: string;
+}
+
+//@doc("Post body schema to create a prompt completion from a deployment")
+model CompletionsRequest {
+    @doc("CompletionsRequest")
+    prompt?: CompletionsPrompt1 | CompletionsPrompt2 | CompletionsPrompt3;
+};
+
+@doc("Expected response schema to completion request")
+model Completion {
+    @doc("Request ID for troubleshooting purposes")
+    @header "apim-request-id": string;
+    @doc("Id for completion response")
+    id?: string;
+    @doc("Object for completion response")
+    object: "text_completion";
+    @doc("Created time for completion response")
+    created?: int32;
+    @doc("Model used for completion response")
+    "model"?: string;
+    @doc("Array of choices returned containing text completions to prompts sent")
+    choices?: Choice[];
+}
+
+@doc("Choice model within completion response")
+model Choice {
+    @doc("Generated text for given completion prompt")
+    text?: string;
+    @doc("Index")
+    index?: int32;
+    @doc("Log Prob Model")
+    logprobs?: CompletionsLogProbsModel;
+    @doc("Reason for finishing")
+    finish_reason?: string;
+}
+
+@doc("LogProbs model within completion choice")
+model CompletionsLogProbsModel {
+    @doc("Tokens")
+    tokens?: string[];
+    @doc("LogProbs of Tokens")
+    token_logprobs?: float32[];
+    @doc("Top LogProbs")
+    top_logprobs?: Record<float32>[];
+    @doc("Text offset")
+    text_offset?: int32[];
+}
