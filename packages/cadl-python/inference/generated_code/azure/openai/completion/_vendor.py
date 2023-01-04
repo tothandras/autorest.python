@@ -28,10 +28,10 @@ def _format_url_section(template, **kwargs):
             template = "/".join(components)
 
 
-class EmbeddingClientMixinABC(ABC):
+class CompletionClientMixinABC(ABC):
     """DO NOT use this class. It is for internal typing use only."""
 
     _client: "PipelineClient"
-    _config: EmbeddingClientConfiguration
+    _config: CompletionClientConfiguration
     _serialize: "Serializer"
     _deserialize: "Deserializer"

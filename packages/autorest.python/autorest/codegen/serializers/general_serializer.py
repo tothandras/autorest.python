@@ -141,6 +141,7 @@ class GeneralSerializer:
                 file_import,
             ),
             async_mode=self.async_mode,
+            clients=clients,
         )
 
     def serialize_config_file(self, clients: List[Client]) -> str:

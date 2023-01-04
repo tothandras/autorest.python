@@ -17,10 +17,10 @@ if TYPE_CHECKING:
     from .._serialization import Deserializer, Serializer
 
 
-class EmbeddingClientMixinABC(ABC):
+class CompletionClientMixinABC(ABC):
     """DO NOT use this class. It is for internal typing use only."""
 
     _client: "AsyncPipelineClient"
-    _config: EmbeddingClientConfiguration
+    _config: CompletionClientConfiguration
     _serialize: "Serializer"
     _deserialize: "Deserializer"
