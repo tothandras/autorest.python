@@ -32,9 +32,8 @@ class CompletionClient(CompletionClientOperationsMixin):  # pylint: disable=clie
      or a OAuth2 type. Required.
     :type credential: ~azure.core.credentials.AzureKeyCredential or
      ~azure.core.credentials.TokenCredential
-    :keyword api_version: The API version to use for this operation. Default value is
-     "2022-06-01-preview". Note that overriding this default value may result in unsupported
-     behavior.
+    :keyword api_version: The API version to use for this operation. Default value is "2022-06-01".
+     Note that overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 

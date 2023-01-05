@@ -38,9 +38,8 @@ class EmbeddingClientConfiguration(Configuration):  # pylint: disable=too-many-i
      or a OAuth2 type. Required.
     :type credential: ~azure.core.credentials.AzureKeyCredential or
      ~azure.core.credentials_async.AsyncTokenCredential
-    :keyword api_version: The API version to use for this operation. Default value is
-     "2022-06-01-preview". Note that overriding this default value may result in unsupported
-     behavior.
+    :keyword api_version: The API version to use for this operation. Default value is "2022-06-01".
+     Note that overriding this default value may result in unsupported behavior.
     :paramtype api_version: str
     """
 
@@ -48,7 +47,7 @@ class EmbeddingClientConfiguration(Configuration):  # pylint: disable=too-many-i
         self, endpoint: str, credential: Union[AzureKeyCredential, "AsyncTokenCredential"], **kwargs: Any
     ) -> None:
         super(EmbeddingClientConfiguration, self).__init__(**kwargs)
-        api_version: Literal["2022-06-01-preview"] = kwargs.pop("api_version", "2022-06-01-preview")
+        api_version: Literal["2022-06-01"] = kwargs.pop("api_version", "2022-06-01")
 
         if endpoint is None:
             raise ValueError("Parameter 'endpoint' must not be None.")

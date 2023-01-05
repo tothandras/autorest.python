@@ -50,9 +50,7 @@ def build_embedding_embeddings_request(deployment_id: str, **kwargs: Any) -> Htt
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
     content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
-    api_version: Literal["2022-06-01-preview"] = kwargs.pop(
-        "api_version", _params.pop("api-version", "2022-06-01-preview")
-    )
+    api_version: Literal["2022-06-01"] = kwargs.pop("api_version", _params.pop("api-version", "2022-06-01"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
