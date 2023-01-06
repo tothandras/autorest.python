@@ -73,14 +73,12 @@ class Choice(_model_base.Model):
 
 
 class Completion(_model_base.Model):
-    """Expected response schema to completion request.
+    """Completion.
 
     Readonly variables are only populated by the server, and will be ignored when sending a request.
 
     All required parameters must be populated in order to send to Azure.
 
-    :ivar apim_request_id: Request ID for troubleshooting purposes. Required.
-    :vartype apim_request_id: str
     :ivar id: Id for completion response.
     :vartype id: str
     :ivar object: Object for completion response. Required. Default value is "text_completion".
@@ -93,8 +91,6 @@ class Completion(_model_base.Model):
     :vartype choices: list[~azure.openai.models.Choice]
     """
 
-    apim_request_id: str = rest_field(name="apim-request-id")
-    """Request ID for troubleshooting purposes. Required. """
     id: Optional[str] = rest_field()
     """Id for completion response. """
     object: Literal["text_completion"] = rest_field()
@@ -110,7 +106,6 @@ class Completion(_model_base.Model):
     def __init__(
         self,
         *,
-        apim_request_id: str,
         id: Optional[str] = None,  # pylint: disable=redefined-builtin
         created: Optional[int] = None,
         model: Optional[str] = None,

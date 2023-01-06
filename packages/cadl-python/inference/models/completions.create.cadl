@@ -123,10 +123,7 @@ alias CompletionsPrompt = string | string[] | string[][];
 
 alias CompletionsStop = string | string[];
 
-@doc("Expected response schema to completion request")
 model Completion {
-    @doc("Request ID for troubleshooting purposes")
-    @header "apim-request-id": string;
     @doc("Id for completion response")
     id?: string;
     @doc("Object for completion response")
@@ -137,6 +134,13 @@ model Completion {
     "model"?: string;
     @doc("Array of choices returned containing text completions to prompts sent")
     choices?: Choice[];
+}
+
+@doc("Expected response schema to completion request")
+model CompletionResponse {
+    @doc("Request ID for troubleshooting purposes")
+    @header "apim-request-id": string;
+    ...Completion;
 }
 
 @doc("Choice model within completion response")
