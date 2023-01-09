@@ -4,6 +4,22 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        { 
+            "name": "anomaly",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/packages/cadl-python",
+            "runtimeArgs": ["compile", "anomaly/client.cadl", "--emit", "@azure-tools/cadl-python" ],
+            // "runtimeArgs": ["compile", "anomaly/client.cadl", "--emit", "@azure-tools/cadl-python", "--arg \"python-sdk-folder=C:\\dev2\"" ],
+            "runtimeExecutable": "cadl",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "node",
+            "outFiles": [
+              "${workspaceFolder}/packages/*/dist/**/*.js",
+              "${workspaceFolder}/packages/*/dist-dev/**/*.js",
+              "${workspaceFolder}/core/packages/*/dist/**/*.js",
+              "${workspaceFolder}/core/packages/*/dist-dev/**/*.js"
+            ]
+        },
         {
             "name": "Generate cadl",
             "request": "launch",
