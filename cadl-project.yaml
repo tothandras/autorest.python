@@ -1,0 +1,7 @@
+emit:
+  - "@azure-tools/cadl-python"
+options:
+  "@azure-tools/cadl-python":
+    "package-mode": "dataplane"
+    "package-name": "azure-openai-xxx"
+    "emitter-output-dir": "generated_code"
