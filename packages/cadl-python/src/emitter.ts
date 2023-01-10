@@ -243,6 +243,10 @@ function getEffectiveSchemaType(program: Program, type: Model): Model {
 function getType(program: Program, type: EmitterType): any {
     // don't cache simple type(string, int, etc) since decorators may change the result
     const enableCache = !isSimpleType(program, type);
+    if (type.kind === "Model" && type.name === "") {
+        const effectiveSchema = getEffectiveSchemaType(program, type);
+        effectiveSchema.kind = "Model";
+    }
     const effectiveModel = type.kind === "Model" ? getEffectiveSchemaType(program, type) : type;
     if (enableCache) {
         const cached = typesMap.get(effectiveModel);
@@ -272,6 +276,10 @@ function getType(program: Program, type: EmitterType): any {
         } else {
             simpleTypesMap.set(key, newValue);
         }
+    }
+
+    if (newValue.type === "model" && newValue.name === "CustomResponseFields") {
+        newValue.name = "CustomResponseFields";
     }
 
     return newValue;
@@ -537,10 +545,13 @@ function emitResponse(
     let type = undefined;
     if (innerResponse.body?.type && !isAzureCoreErrorType(innerResponse.body?.type)) {
         // temporary logic. It can be removed after compiler optimize the response
-        const candidate = ["ResourceOkResponse", "ResourceCreatedResponse", "AcceptedResponse"];
-        const originType = innerResponse.body.type as Model;
-        if (innerResponse.body.type.kind === "Model" && candidate.find((e) => e === originType.name)) {
-            const modelType = getEffectiveSchemaType(program, originType);
+        // const candidate = ["ResourceOkResponse", "ResourceCreatedResponse", "AcceptedResponse"];
+        // const originType = innerResponse.body.type as Model;
+        if (innerResponse.body.type.kind === "Model" && innerResponse.body.type.name === "") {
+            innerResponse.body.type.name = "";
+        }
+        if (innerResponse.body.type.kind === "Model") {
+            const modelType = getEffectiveSchemaType(program, innerResponse.body.type);
             type = getType(program, modelType);
         } else {
             type = getType(program, innerResponse.body.type);
@@ -742,7 +753,12 @@ function emitModel(program: Program, type: Model): Record<string, any> {
     if (type.baseModel) {
         baseModel = getType(program, type.baseModel);
     }
-    const modelName = getName(program, type) || getEffectiveSchemaType(program, type).name;
+    const name1 = getName(program, type);
+    const name2 = getEffectiveSchemaType(program, type).name;
+    let modelName = name1 || name2;
+    if (modelName === "CustomResponseFields") {
+        modelName = "CustomResponseFields";
+    }
     return {
         type: "model",
         name: modelName,
@@ -1293,6 +1309,14 @@ function emitCodeModel(context: EmitContext<EmitterOptions>) {
         }
     }
     codeModel["types"] = [...typesMap.values(), ...Object.values(KnownTypes), ...simpleTypesMap.values()];
+    const result = [];
+    for (const item of codeModel["types"]) {
+        try {
+            if (item.type === "model") {
+                result.push(item.name);
+            }
+        } catch {}
+    }
     return codeModel;
 }
 

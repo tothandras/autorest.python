@@ -17,8 +17,6 @@ interface AuthoringClient extends Azure.OpenAI.Deployments, Azure.OpenAI.Files, 
   service: Azure.OpenAI
 })
 interface InferenceClient {
-  @convenienceAPI
   embeddings is Azure.OpenAI.embeddings;
-  @convenienceAPI
   completions is Azure.OpenAI.completions;
 }
