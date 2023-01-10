@@ -1,0 +1,7 @@
+include *.md
+include LICENSE
+include azure/openai/python/py.typed
+recursive-include tests *.py
+recursive-include samples *.py *.md
+include azure/__init__.py
+include azure/openai/__init__.py
