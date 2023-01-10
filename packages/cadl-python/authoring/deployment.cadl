@@ -16,20 +16,20 @@ interface Deployments {
   // TODO: enum value types not supported in csharp emitter, change string literal to TypeDiscriminatorKnownValues enum when fixed
   ListDeployments is ServiceCustomizations.OpenAIListOperation<Deployment, "deployment">;
 
-  @summary("""
-Creates a new deployment for the Azure OpenAI resource according to the given
-specification.
-""")
-  @doc("""
-Creates a new deployment for the Azure OpenAI resource according to the given
-specification.
-""")
-  CreateDeployment is ResourceCreateWithServiceProvidedName<
-    Deployment,
-    {
-      response: Deployment
-    }
-  >;
+//   @summary("""
+// Creates a new deployment for the Azure OpenAI resource according to the given
+// specification.
+// """)
+//   @doc("""
+// Creates a new deployment for the Azure OpenAI resource according to the given
+// specification.
+// """)
+//   CreateDeployment is ResourceCreateWithServiceProvidedName<
+//     Deployment,
+//     {
+//       response: Deployment
+//     }
+//   >;
 
   @summary("Gets details for a single deployment specified by the given deployment_id.")
   @doc("Gets details for a single deployment specified by the given deployment_id.")

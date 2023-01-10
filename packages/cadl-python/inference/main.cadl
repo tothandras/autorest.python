@@ -43,7 +43,7 @@ enum ServiceApiVersions {
 
 @doc("A specific deployment")
 @Cadl.Rest.resource("deployments")
-model Deployment {
+model DeploymentInference {
   @doc("deployment id of the deployed model")
   @key
   deploymentId: string;

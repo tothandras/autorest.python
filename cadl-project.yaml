@@ -3,5 +3,5 @@ emit:
 options:
   "@azure-tools/cadl-python":
     "package-mode": "dataplane"
-    "package-name": "azure-openai-xxx"
+    "package-name": "azure-openai-python"
     "emitter-output-dir": "D:\\dev\\autorest.python\\packages\\cadl-python\\generated_code"
