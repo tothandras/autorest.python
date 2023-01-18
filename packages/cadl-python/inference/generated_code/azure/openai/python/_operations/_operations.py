@@ -239,6 +239,8 @@ class OpenAIClientOperationsMixin(OpenAIClientMixinABC):
         cls: ClsType[_models.Embeddings] = kwargs.pop("cls", None)
 
         if body is _Unset:
+            if input is _Unset:
+                raise TypeError("missing required argument: input")
             body = {"input": input, "input_type": input_type, "model": model, "user": user}
             body = {k: v for k, v in body.items() if v is not None}
         content_type = content_type or "application/json"
