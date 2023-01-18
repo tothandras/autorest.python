@@ -1,0 +1,7 @@
+parameters:
+  python-sdk-folder:
+    default: "{cwd}/generated_code"
+options:
+  "@azure-tools/cadl-python":
+    "package-name": "azure-openai-python"
+    "emitter-output-dir": "C:\\dev1\\autorest.python\\packages\\cadl-python\\inference\\generated_code"
