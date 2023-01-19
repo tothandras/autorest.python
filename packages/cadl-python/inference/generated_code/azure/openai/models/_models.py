@@ -36,7 +36,7 @@ class Choice(_model_base.Model):
     :ivar index: Index.
     :vartype index: int
     :ivar logprobs: Log Prob Model.
-    :vartype logprobs: ~azure.openai.python.models.CompletionsLogProbsModel
+    :vartype logprobs: ~azure.openai.models.CompletionsLogProbsModel
     :ivar finish_reason: Reason for finishing.
     :vartype finish_reason: str
     """
@@ -88,7 +88,7 @@ class Completion(_model_base.Model):
     :ivar model: Model used for completion response.
     :vartype model: str
     :ivar choices: Array of choices returned containing text completions to prompts sent.
-    :vartype choices: list[~azure.openai.python.models.Choice]
+    :vartype choices: list[~azure.openai.models.Choice]
     """
 
     id: Optional[str] = rest_field()
@@ -222,7 +222,7 @@ class Embeddings(_model_base.Model):
     :ivar object: Required. Default value is "list".
     :vartype object: str
     :ivar data: Required.
-    :vartype data: list[~azure.openai.python.models.Embedding]
+    :vartype data: list[~azure.openai.models.Embedding]
     """
 
     object: Literal["list"] = rest_field()

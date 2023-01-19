@@ -9,12 +9,12 @@
 from setuptools import setup, find_packages
 
 
-PACKAGE_NAME = "azure-openai-python"
+PACKAGE_NAME = "openaiclient"
 version = "1.0.0b1"
 setup(
     name=PACKAGE_NAME,
     version=version,
-    description="azure-openai-python",
+    description="OpenAIClient",
     author_email="",
     url="",
     keywords="azure, azure sdk",
