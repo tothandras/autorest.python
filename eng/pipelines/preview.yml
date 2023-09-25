@@ -1,0 +1,50 @@
+trigger: none
+schedules:
+- cron: '0 0 * * *'
+  displayName: Daily midnight build
+  branches:
+    include:
+    - main
+pr: none
+
+parameters:
+- name: UseTypeSpecNext
+  displayName: Use TypeSpec "next" version
+  type: boolean
+  default: true
+
+resources:
+  repositories:
+    - repository: sdk-repository
+      type: github
+      endpoint: Azure
+      name: Azure/azure-sdk-for-python
+      ref: refs/heads/users/pahallis/cookiecutter
+    - repository: azure-sdk-tools
+      type: github
+      endpoint: Azure
+      name: Azure/azure-sdk-tools
+      ref: refs/heads/users/pahallis/cookiecutter
+
+variables:
+  PythonVersion: "3.10"
+
+pool:
+  name: azsdk-pool-mms-win-2022-general
+  vmImage: windows-2022
+
+extends:
+  template: eng/pipelines/templates/stages/archetype-autorest-preview.yml@azure-sdk-tools
+  parameters:
+    RegenerationJobCount: 1
+    BuildAlphaVersion: true
+    UseTypeSpecNext: ${{ parameters.UseTypeSpecNext }}
+    EmitterPackageJsonPath: packages/typespec-python/package.json
+    Packages:
+    - name: generator
+      file: autorest-python-*.tgz
+      type: npm
+    - name: emitter
+      file: azure-tools-typespec-python-*.tgz
+      type: npm
+    PublishTarget: 'internal'
