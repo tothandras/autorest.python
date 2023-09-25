@@ -39,6 +39,10 @@ steps:
     displayName: "Pyright"
 
   - script: |
+      verifytypes autorest
+    displayName: "verifytypes"
+
+  - script: |
       pytest test/unittests
     displayName: "Unit tests"
 
