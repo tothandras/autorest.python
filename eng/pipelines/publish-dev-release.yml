@@ -39,7 +39,7 @@ steps:
     displayName: "Pyright"
 
   - script: |
-      verifytypes autorest
+      pyright --verifytypes autorest
     displayName: "verifytypes"
 
   - script: |

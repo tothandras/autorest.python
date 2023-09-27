@@ -94,7 +94,7 @@ steps:
       workingDirectory: $(Build.SourcesDirectory)/autorest.python/packages/${{parameters.folderName}}
       condition: and(succeeded(), ${{ parameters.pythonCodeChecks }})
 
-    - script: verifytypes ${{parameters.pythonFolderName}}
+    - script: pyright --verifytypes ${{parameters.pythonFolderName}}
       displayName: verifytypes
       workingDirectory: $(Build.SourcesDirectory)/autorest.python/packages/${{parameters.folderName}}
       condition: and(succeeded(), ${{ parameters.pythonCodeChecks }})
